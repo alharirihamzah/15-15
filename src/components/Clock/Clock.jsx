@@ -9,6 +9,7 @@ import moment from 'moment'
 import {
     Wrapper,
     TopWrapper,
+    HiddenText,
     TimeWrapper,
     TimeText,
     BottomWrapper,
@@ -62,6 +63,10 @@ const Clock = () => {
         setCurrentTime(newTime)
     }
 
+    const testSound = () => {
+        playSound()
+    }
+
     if (currentTime) {
         let hours = `${moment(currentTime).get('h')}`
         let minutes = `${moment(currentTime).get('m')}`
@@ -85,6 +90,10 @@ const Clock = () => {
         return (
             <Wrapper>
                 <TopWrapper>
+                    <HiddenText onClick={testSound}>
+                        Test
+                    </HiddenText>
+
                     <TimeWrapper active={active}>
                         {
                             clockParts.map((part, idx) => {

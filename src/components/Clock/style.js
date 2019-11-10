@@ -14,6 +14,18 @@ const TopWrapper = styled.div`
     margin: auto auto 0 auto;
 `
 
+const HiddenText = styled.p`
+    top: 10px;
+    opacity: 0;
+    right: 20px;
+    cursor: pointer;
+    position: absolute;
+
+    &:hover {
+        opacity: 1;
+    }
+`
+
 const neon = keyframes`
     from {
         text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #228DFF, 0 0 70px #228DFF, 0 0 80px #228DFF, 0 0 100px #228DFF, 0 0 150px #228DFF;
@@ -80,6 +92,7 @@ const DateText = styled.p`
 export {
     Wrapper,
     TopWrapper,
+    HiddenText,
     TimeText,
     TimeWrapper,
     BottomWrapper,
