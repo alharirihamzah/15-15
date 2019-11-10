@@ -15,9 +15,12 @@ import {
     RowValue
 } from './style'
 
-const CITY = 'kalmar'
+// const CITY = 'kalmar'
+const CITY_KEY = 308266
 const TWELVE_HOURS = 60000 * 60 * 6
-const ACCESS_KEY = 'd35f9538c1106637eb2baf799519ee08'
+// const ACCESS_KEY = 'd35f9538c1106637eb2baf799519ee08'
+const ACCESS_KEY = '4qEsaEEVHzWeu62poAuWYVflLsZtOHLV'
+const ICON_SRC = 'https://apidev.accuweather.com/developers/Media/Default/WeatherIcons/{{NUMBER}}-s.png'
 
 const Weather = () => {
     const [data, setData] = useState(null)
@@ -31,11 +34,12 @@ const Weather = () => {
     }, [])
 
     const getWeatherData = () => {
-        fetch(`http://api.weatherstack.com/current?access_key=${ACCESS_KEY}&query=${CITY}`)
+        // fetch(`http://api.weatherstack.com/current?access_key=${ACCESS_KEY}&query=${CITY}`)
+        fetch(`https://dataservice.accuweather.com/currentconditions/v1/${CITY_KEY}?apikey=${ACCESS_KEY}`)
             .then(response => response.json())
             .then(result => {
-                if (result && result.current) {
-                    const weatherPayload = buildWeatherPayload(result)
+                if (Array.isArray(result) && result.length) {
+                    const weatherPayload = buildWeatherPayload(result[0])
                     setData(weatherPayload)
                 }
             }).catch(error => {
@@ -45,28 +49,20 @@ const Weather = () => {
             })
     }
 
-    const buildWeatherPayload = payload => {
+    const buildWeatherPayload = payload => {        
         const {
-            precip,
-            wind_dir,
-            pressure,
-            wind_speed,
-            temperature,
-            weather_icons,
-            weather_descriptions
-        } = payload.current
+            WeatherIcon,
+            WeatherText,
+            Temperature,
+        } = payload
 
-        const icon = Array.isArray(weather_icons) && weather_icons[0] ? weather_icons[0] : null
-        const descriptions = Array.isArray(weather_descriptions) ? weather_descriptions.join(', ') : ''
+        const icon = `${WeatherIcon}`.length === 1 ? `0${WeatherIcon}` : `${WeatherIcon}`
+        const temp = Temperature && Temperature.Metric ? Temperature.Metric.Value : null
 
         const weatherPayload = {
             icon: icon,
-            precip: precip,
-            windDir: wind_dir,
-            temp: temperature,
-            pressure: pressure,
-            windSpeed: wind_speed,
-            descriptions: descriptions
+            temp: temp,
+            descriptions: WeatherText
         }
 
         return weatherPayload
@@ -79,8 +75,8 @@ const Weather = () => {
                     {
                         data.icon && (
                             <Icon
-                                src={data.icon}
                                 alt={data.descriptions}
+                                src={ICON_SRC.replace('{{NUMBER}}', data.icon)}
                             />
                         )
                     }
@@ -90,7 +86,7 @@ const Weather = () => {
 
                 <Temp>{data.temp}°C</Temp>
 
-                <InnerWrapper>
+                {/* <InnerWrapper>
                     <RowWrapper>
                         <RowLabel>Wind: </RowLabel>
                         <RowValue>{data.windSpeed} kmph - {data.windDir}</RowValue>
@@ -105,7 +101,7 @@ const Weather = () => {
                         <RowLabel>Pressure: </RowLabel>
                         <RowValue>{data.pressure} mb</RowValue>
                     </RowWrapper>
-                </InnerWrapper>
+                </InnerWrapper> */}
             </Wrapper>
         )
     } else {
